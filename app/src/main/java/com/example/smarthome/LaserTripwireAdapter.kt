@@ -5,11 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class LaserTripwireAdapter(private var timestampList: MutableList<Timestamp>): RecyclerView.Adapter<LaserTripwireAdapter.LaserViewHolder>() {
+class LaserTripwireAdapter(private var timestampList: MutableList<String>): RecyclerView.Adapter<LaserTripwireAdapter.LaserViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LaserViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -24,23 +23,24 @@ class LaserTripwireAdapter(private var timestampList: MutableList<Timestamp>): R
 
     override fun getItemCount() = timestampList.size
 
-    fun updateData(newTimestampList: List<Timestamp>) {
+    fun updateData(newTimestampList: List<String>) {
         timestampList = newTimestampList.toMutableList()
         notifyDataSetChanged()
     }
 
     inner class LaserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val timestampTextView: TextView = itemView.findViewById(R.id.laserTimestamp)
-        fun bind(timestamp: Timestamp){
-            // Convert Firestore Timestamp to Date
-            val date = timestamp.toDate()
+        fun bind(timestamp: String){
+            timestampTextView.text = formatTimestamp(timestamp)
+        }
 
-            // Format the Date to a human-readable string
-            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-            val formattedTimestamp = sdf.format(date)
+        private fun formatTimestamp(timestamp: String): String {
+            // Assuming `timestamp` is in the format "yyyy-MM-dd HH:mm:ss"
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+            val outputFormat = SimpleDateFormat("dd MMM yyyy HH:mm:ss", Locale.getDefault())
 
-            // Set the formatted timestamp in the TextView
-            timestampTextView.text = formattedTimestamp
+            val date = inputFormat.parse(timestamp)
+            return outputFormat.format(date)
         }
     }
 }

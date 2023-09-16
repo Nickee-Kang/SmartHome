@@ -3,4 +3,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="theme">#39ace7</color>
+    <color name="danger">#ff0e0e</color>
 </resources>

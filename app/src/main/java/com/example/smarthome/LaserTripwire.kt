@@ -1,38 +1,35 @@
 package com.example.smarthome
 
-import android.content.ContentValues
-import android.content.Intent
-import android.media.session.MediaSessionManager.OnMediaKeyEventSessionChangedListener
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
-import android.widget.Toast
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.Timestamp
-import com.google.firebase.firestore.DocumentChange
-import com.google.firebase.firestore.EventListener
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.FirebaseApp
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class LaserTripwire : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var laserTripwireAdapter: LaserTripwireAdapter
-    private lateinit var db: FirebaseFirestore
+    private lateinit var database: FirebaseDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_laser_tripwire)
 
-        db = FirebaseFirestore.getInstance()
+        // Initialize Firebase Realtime Database
+        FirebaseApp.initializeApp(this)
+        database = FirebaseDatabase.getInstance()
+
         recyclerView = findViewById(R.id.laser_recycler)
         recyclerView.setHasFixedSize(true)
 
-        val timestampList = mutableListOf<Timestamp>()
+        val timestampList = mutableListOf<String>()
         laserTripwireAdapter = LaserTripwireAdapter(timestampList)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = laserTripwireAdapter
@@ -46,31 +43,33 @@ class LaserTripwire : AppCompatActivity() {
     }
 
     private fun retrieveTimestamps() {
-        val laserIntrusionCollection = db.collection("LaserIntrusion")
+        val databaseReference = database.reference.child("laser_intrusions")
 
-        laserIntrusionCollection
-            .addSnapshotListener { value, error ->
-                if (error != null) {
-                    // Handle error
-                    return@addSnapshotListener
-                }
+        databaseReference.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val timestampList = mutableListOf<String>()
 
-                val timestampList = mutableListOf<Timestamp>()
-
-                for (document in value?.documents ?: emptyList()) {
-                    if (document.contains("timestamp")) {
-                        val timestamp = document.getTimestamp("timestamp")
-                        if (timestamp != null) {
-                            timestampList.add(timestamp)
-                        }
+                for (snapshot in dataSnapshot.children) {
+                    val timestampString = snapshot.child("timestamp").getValue(String::class.java)
+                    timestampString?.let {
+                        timestampList.add(it)
                     }
                 }
 
+                // Log the retrieved timestamp data
+                Log.d("Firebase Data", timestampList.toString())
+
                 // Sort the timestampList from latest to oldest
-                timestampList.sortByDescending { it.seconds }
+                timestampList.sortByDescending { it }
 
                 // Update the adapter with the retrieved timestamps
                 laserTripwireAdapter.updateData(timestampList)
             }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle onCancelled event (if needed)
+                Log.e("Database Error", error.message)
+            }
+        })
     }
 }
