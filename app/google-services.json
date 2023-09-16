@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "724515962839",
+    "firebase_url": "https://smarthome-jntm-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "smarthome-jntm",
+    "storage_bucket": "smarthome-jntm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:724515962839:android:613643246471d5d3ff5592",
+        "android_client_info": {
+          "package_name": "com.example.smarthome"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2qBpsYQprpfV-9juSNJXgFI4ir9E89tU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
