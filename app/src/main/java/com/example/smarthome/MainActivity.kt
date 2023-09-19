@@ -25,8 +25,8 @@ class MainActivity : AppCompatActivity() {
 
         val pressureCard = findViewById<CardView>(R.id.pressure_card)
         pressureCard.setOnClickListener{
-            /*val intent = Intent(this, MatPressure::class.java)
-            startActivity(intent)*/
+            val intent = Intent(this, MatPressure::class.java)
+            startActivity(intent)
         }
 
         val cameraCard = findViewById<CardView>(R.id.camera_card)
