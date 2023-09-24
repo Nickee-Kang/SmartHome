@@ -5,11 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.cardview.widget.CardView
+import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        FirebaseMessaging.getInstance().subscribeToTopic("laser");
 
         val smartLockCard = findViewById<CardView>(R.id.smart_lock_card)
         smartLockCard.setOnClickListener{

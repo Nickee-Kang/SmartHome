@@ -56,4 +56,6 @@ dependencies {
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
     implementation("androidx.core:core-ktx:1.6.0")
+    implementation ("com.google.firebase:firebase-messaging:22.0.0")
+
 }
