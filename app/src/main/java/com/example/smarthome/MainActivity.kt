@@ -31,8 +31,8 @@ class MainActivity : AppCompatActivity() {
 
         val cameraCard = findViewById<CardView>(R.id.camera_card)
         cameraCard.setOnClickListener{
-            /*val intent = Intent(this, SmartCamera::class.java)
-            startActivity(intent)*/
+            val intent = Intent(this, CameraCapture::class.java)
+            startActivity(intent)
         }
     }
 }
