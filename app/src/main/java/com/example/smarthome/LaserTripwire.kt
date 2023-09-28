@@ -1,9 +1,14 @@
 package com.example.smarthome
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
+import androidx.core.app.NotificationCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.FirebaseApp
@@ -11,6 +16,8 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class LaserTripwire : AppCompatActivity() {
 
@@ -43,6 +50,7 @@ class LaserTripwire : AppCompatActivity() {
     }
 
     private fun retrieveTimestamps() {
+
         val databaseReference = database.reference.child("laser_intrusions")
 
         databaseReference.addValueEventListener(object : ValueEventListener {
@@ -64,6 +72,10 @@ class LaserTripwire : AppCompatActivity() {
 
                 // Update the adapter with the retrieved timestamps
                 laserTripwireAdapter.updateData(timestampList)
+
+//                if(isNewDataAdded(timestampList)) {
+//                    sendNotification()
+//                }
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -72,4 +84,40 @@ class LaserTripwire : AppCompatActivity() {
             }
         })
     }
+
+    private fun sendNotification() {
+        val currentTimestamp = System.currentTimeMillis()
+        val date = java.util.Date(currentTimestamp)
+        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val dateString = sdf.format(date)
+
+        createNotificationChannel()
+
+        var builder = NotificationCompat.Builder(applicationContext, "notification_channel")
+        builder.setSmallIcon(R.drawable.kun)
+            .setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
+            .setContentTitle("New Intrusion Detected")
+            .setContentText("Intrusion On: $dateString")
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
+
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(0, builder.build())
+    }
+
+    private fun createNotificationChannel(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel = NotificationChannel("notification_channel", "com.example.smarthome",
+                NotificationManager.IMPORTANCE_HIGH)
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
+    }
+
+//    private fun isNewDataAdded(newDataList: List<String>): Boolean {
+//        if (newDataList.isNotEmpty() && timestampList.isNotEmpty()) {
+//            return newDataList[0] != timestampList[0]
+//        }
+//        return false
+//    }
 }
