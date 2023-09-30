@@ -12,7 +12,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        FirebaseMessaging.getInstance().subscribeToTopic("laser");
+        FirebaseMessaging.getInstance().subscribeToTopic("laser")
+        FirebaseMessaging.getInstance().subscribeToTopic("pressure")
 
         val smartLockCard = findViewById<CardView>(R.id.smart_lock_card)
         smartLockCard.setOnClickListener{

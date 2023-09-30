@@ -42,7 +42,7 @@ class MatPressure: AppCompatActivity() {
     }
 
     private fun retrieveTimestamps() {
-        val databaseReference = database.reference.child("mat_pressure_intrusions")
+        val databaseReference = database.reference.child("pressure_mat_intrusions")
 
         databaseReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
