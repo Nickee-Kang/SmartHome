@@ -15,12 +15,6 @@ class MainActivity : AppCompatActivity() {
         FirebaseMessaging.getInstance().subscribeToTopic("laser")
         FirebaseMessaging.getInstance().subscribeToTopic("pressure")
 
-        val smartLockCard = findViewById<CardView>(R.id.smart_lock_card)
-        smartLockCard.setOnClickListener{
-            /*val intent = Intent(this, SmartLock::class.java)
-            startActivity(intent)*/
-        }
-
         val laserCard = findViewById<CardView>(R.id.laser_card)
         laserCard.setOnClickListener{
             val intent = Intent(this, LaserTripwire::class.java)
